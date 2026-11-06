@@ -1,8 +1,13 @@
 # PDF2Base64
 
+[![Tests](https://github.com/andrea6687/PDF2Base64/actions/workflows/tests.yml/badge.svg)](https://github.com/andrea6687/PDF2Base64/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Tool to convert a PDF file into a Base64 string ready to embed in JSON payloads — and back.
 
-Built with Python + Tkinter. No external dependencies. Works as a desktop app or from the command line.
+Built with Python + Tkinter. No external dependencies. Works as a desktop app or from the command line, on macOS, Windows and Linux.
+
+![PDF2Base64 window](docs/screenshot.png)
 
 ---
 
@@ -28,7 +33,7 @@ Large files are handled smoothly: the window shows a preview of the string, whil
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.9+
 - `tkinter` (included in standard Python distributions; only needed for the window, not for the command line)
 - Optional: `pip install tkinterdnd2` to enable drag & drop
 

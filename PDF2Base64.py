@@ -149,6 +149,13 @@ def run_cli(args) -> int:
         print(f"Errore: {msg}", file=sys.stderr)
         return 1
 
+    # Il terminale di Windows non usa UTF-8: senza questo accenti e nomi file particolari danno errore
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8")
+        except (AttributeError, ValueError):
+            pass
+
     # ── Base64 → PDF
     if args.decode:
         try:
