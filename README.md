@@ -33,7 +33,7 @@ Large files are handled smoothly: the window shows a preview of the string, whil
 
 ## Requirements
 
-- Python 3.9+
+- Python 3.10+
 - `tkinter` (included in standard Python distributions; only needed for the window, not for the command line)
 - Optional: `pip install tkinterdnd2` to enable drag & drop
 
