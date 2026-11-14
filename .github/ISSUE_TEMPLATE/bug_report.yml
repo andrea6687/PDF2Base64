@@ -1,0 +1,52 @@
+name: Bug report / Segnala un problema
+description: Something doesn't work as expected. / Qualcosa non funziona come previsto.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! The Base64 string is the PDF. Remove private documents from the text and from screenshots before posting.
+        Grazie per la segnalazione! La stringa Base64 è il PDF. Togli i documenti privati dal testo e dagli screenshot prima di pubblicare.
+  - type: dropdown
+    id: os
+    attributes:
+      label: System / Sistema
+      options:
+        - macOS
+        - Windows
+        - Linux
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version / Versione di Python
+      description: The output of `python --version` (or `python3 --version`). / L'output di `python --version` (oppure `python3 --version`).
+      placeholder: "Python 3.12.3"
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: How you ran it / Come l'hai eseguito
+      options:
+        - Window / Finestra
+        - Command line / Riga di comando
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command you ran, if any / Comando eseguito, se ne hai usato uno
+      render: shell
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened, and what you expected / Cosa è successo e cosa ti aspettavi
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot (optional) / Screenshot (facoltativo)
+      description: Drag an image here. Hide any private document first. / Trascina qui un'immagine. Prima nascondi eventuali documenti privati.

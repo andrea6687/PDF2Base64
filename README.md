@@ -1,103 +1,124 @@
 # PDF2Base64
 
-[![Tests](https://github.com/andrea6687/PDF2Base64/actions/workflows/tests.yml/badge.svg)](https://github.com/andrea6687/PDF2Base64/actions/workflows/tests.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+🇮🇹 [Versione italiana](README.it.md)
 
-Tool to convert a PDF file into a Base64 string ready to embed in JSON payloads — and back.
+**Turn a PDF into a Base64 string ready to put in a JSON payload — and turn that text back into a PDF.**
 
-Built with Python + Tkinter. No external dependencies. Works as a desktop app or from the command line, on macOS, Windows and Linux.
+![The PDF2Base64 window after converting a PDF: file name and size, the Base64 string, and buttons to copy or save it](assets/hero.png)
 
-![PDF2Base64 window](docs/screenshot.png)
+Some APIs and automations (for example n8n, Make, Zapier) expect a PDF as a Base64 string inside a JSON body. PDF2Base64 reads a PDF on your computer and gives you that string, or a JSON object whose field name you choose. The other direction works too: paste a Base64 string, a data URI or a JSON body and save a PDF again.
 
----
+It is one Python file with a Tkinter window. Python is enough: there is no `requirements.txt` and no account. The same file works as a window or from the command line, on macOS, Windows and Linux.
 
-## What it does
-
-1. **Pick a PDF** — file dialog (`Ctrl/⌘+O`), or drag & drop onto the window (optional, see below)
-2. **Checks the file** — warns you if the file doesn't look like a real PDF
-3. **Encodes to Base64** in the background, so the window never freezes
-4. **Shows two outputs**:
-   - `Base64 raw` tab — the plain Base64 string
-   - `JSON snippet` tab — a ready-to-use JSON object with a configurable field name (default: `allegato`)
-5. **Output options**, applied live:
-   - **Include filename** — adds `"_filename"` to the JSON (on by default)
-   - **Data URI prefix** — prepends `data:application/pdf;base64,`
-   - **Compact JSON** — single line, no indentation
-6. **Actions**: copy Base64, copy JSON, save as `.txt`, save as `.json` (`Ctrl/⌘+S`), reset
-7. **Base64 → PDF** — the reverse operation: paste a Base64 string, a data URI or a whole JSON
-   (the Base64 field is found automatically) and save it back as a PDF. Handy to check what an API returned.
-
-Large files are handled smoothly: the window shows a preview of the string, while copy and save always use the full content.
-
----
+> The interface is in Italian for now. The window title is `PDF → Base64 | ISA Digital`.
 
 ## Requirements
 
-- Python 3.10+
-- `tkinter` (included in standard Python distributions; only needed for the window, not for the command line)
-- Optional: `pip install tkinterdnd2` to enable drag & drop
+- Python 3.10 or newer. The commands below use `python`. If your system only has `python3`, use that: it is the same program.
+- `tkinter`, included with the usual Python installers. The command line works without it.
+- Optional: `pip install tkinterdnd2` to drop a PDF onto the window. The file button works without it.
 
----
+Clone or download this repository and run `PDF2Base64.py`.
 
-## Usage
+## How to use it
 
-### Desktop app
+### Window
 
 ```bash
 python PDF2Base64.py                      # open the window
 python PDF2Base64.py --gui document.pdf   # open the window with a file already loaded
 ```
 
+1. Pick a PDF with **Scegli PDF**, or press Ctrl+O (⌘O on a Mac). With `tkinterdnd2` installed you can drop a file on the window. Several files at once: only the first is loaded.
+2. It checks that `%PDF-` appears in the first 1024 bytes. If it doesn't, the window asks before converting.
+3. Encoding runs in the background, so the window stays responsive. A long string is shown up to 20,000 characters. **Copia** and **Salva** always use the full text.
+4. Two tabs:
+   - **Base64 raw** — the plain Base64 string;
+   - **JSON snippet** — a JSON object. The field name is editable and starts as `allegato`.
+5. Three options, applied as you change them:
+   - **Includi nome file** — adds `"_filename"` (on by default);
+   - **Prefisso data URI** — puts `data:application/pdf;base64,` in front of the string;
+   - **JSON compatto** — one line, no indentation.
+6. **Copia base64**, **Copia JSON**, **Salva .txt**, **Salva .json** (Ctrl+S / ⌘S) and **Reset**.
+7. **Base64 → PDF** opens a second window. Paste a Base64 string, a data URI or a JSON body, or open a `.txt` / `.json` file, then save the PDF. Spaces, line breaks and a missing `=` padding are accepted, and so is the URL-safe alphabet (`-` and `_`). In a JSON body the window uses the field name currently set in **Nome campo JSON**. If that name is absent, it decodes the longest string. A file name is taken from `_filename`, `filename`, `file_name`, `nome_file`, `nomefile` or `name` when one of those keys is present. If the result does not look like a PDF, the window asks before saving.
+
 ### Command line
 
 ```bash
-# PDF → Base64 (printed to the terminal)
+# PDF → Base64, printed to the terminal
 python PDF2Base64.py document.pdf
 
-# PDF → JSON file with a custom field name
+# PDF → JSON file, with your own field name
 python PDF2Base64.py document.pdf --json --field attachment -o payload.json
 
-# Options: --no-filename  --data-uri  --compact
-python PDF2Base64.py document.pdf --json --compact --data-uri
+# The same options as the checkboxes
+python PDF2Base64.py document.pdf --json --compact --data-uri --no-filename
 
-# Base64 / data URI / JSON → PDF
+# Base64, data URI or JSON → PDF
 python PDF2Base64.py --decode payload.json -o document.pdf
 
-# Works with pipes too ("-" = standard input)
+# Pipes. "-" means standard input.
 cat document.pdf | python PDF2Base64.py - > document.b64
+python PDF2Base64.py --decode - -o document.pdf < payload.json
 ```
 
-Run `python PDF2Base64.py --help` for all options.
-
----
+`python PDF2Base64.py --help` lists every option. If the file does not look like a PDF, the command line prints a warning and converts it anyway. On Windows it switches the terminal to UTF-8, so accents in messages and file names print correctly. From the command line, `--field` is used only when you pass it: without it, a JSON body is decoded from its longest string.
 
 ## Output example
 
-**Base64 raw tab:**
+**Base64 raw**
+
 ```
-JVBERi0xLjQKJeLjz9MKNiAwIG9iago8PC9...
+JVBERi0xLjQKJeLjz9MK...
 ```
 
-**JSON snippet tab:**
+**JSON snippet**, with the default field name and the file name on:
+
 ```json
 {
-  "allegato": "JVBERi0xLjQKJeLjz9MKNiAwIG9iago8PC9...",
-  "_filename": "documento.pdf"
+  "allegato": "JVBERi0xLjQKJeLjz9MK...",
+  "_filename": "document.pdf"
 }
 ```
 
-The JSON field name is editable live in the UI — change `allegato` to any key your API expects.
+Change `allegato` to the key your API expects.
 
----
+## Privacy
 
-## Tests
+PDF2Base64 makes no network requests and has no server. It reads the file you choose and writes only where you save, or to the terminal. The Base64 string is the whole PDF: treat a copied JSON the same way you would treat the file.
+
+## Known limitations
+
+- Buttons and labels are in Italian.
+- Drag and drop needs the optional package `tkinterdnd2`.
+- The on-screen text stops at 20,000 characters. Copy and save do not.
+- The PDF check looks for `%PDF-` in the first 1024 bytes. It does not parse the rest of the file.
+- In a JSON body, the named field wins and otherwise the longest string is decoded. Set the field name when the file sits next to a longer piece of text.
+
+## Development
 
 ```bash
 python -m unittest -v
 ```
 
+The tests cover encoding, the JSON object, decoding (plain Base64, data URI, URL-safe Base64, missing padding, JSON) and the command line. They call the conversion directly, so they run without opening the window and without Tkinter.
+
+GitHub Actions runs that command on Ubuntu, macOS and Windows, with Python 3.10 and 3.13. The workflow is [`.github/workflows/tests.yml`](.github/workflows/tests.yml).
+
+```
+PDF2Base64.py                 the program: encode, decode, window, command line
+test_PDF2Base64.py            automated tests
+docs/screenshot.png           an earlier capture of the window
+assets/hero.png               capture of the window used at the top of this page
+.github/workflows/tests.yml   tests on every push and pull request
+```
+
+To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+[MIT](LICENSE) © Andrea Sportello
+
 ---
 
-## Use case
-
-Useful when an API or automation (e.g. n8n, Make, Zapier) expects a PDF embedded as a Base64 string inside a JSON body rather than as a multipart file upload.
+If PDF2Base64 saved you some copying, a ⭐ on the repository helps other people find it. Bugs and ideas are welcome in the [issues](https://github.com/andrea6687/PDF2Base64/issues).
