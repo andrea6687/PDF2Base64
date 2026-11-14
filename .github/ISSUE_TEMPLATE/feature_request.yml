@@ -1,0 +1,24 @@
+name: Idea / Proposta
+description: Suggest an improvement. / Proponi un miglioramento.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would it solve? / Quale problema risolverebbe?
+      description: For example a JSON shape your API needs that the window can't produce. / Per esempio una forma di JSON che la tua API vuole e che la finestra non produce.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea / La tua idea
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: This is about converting a PDF I already have, on my computer. / Riguarda convertire un PDF che ho già, sul mio computer.
+          required: true
